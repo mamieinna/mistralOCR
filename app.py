@@ -69,7 +69,8 @@ if uploaded_file is not None:
 
         if st.button("🧠 Run OCR on Image"):
             with st.spinner("Extracting text from image..."):
-                ocr_text = extract_text_from_image(temp_path)
+                # ocr_text = extract_text_from_image(temp_path)
+                st.session_state.ocr_text = extract_text_from_image(temp_path)
             st.subheader("📝 OCR Text")
             st.text_area("Raw OCR Output", ocr_text, height=200)
 
@@ -79,31 +80,32 @@ if uploaded_file is not None:
         if st.button("🧠 Run OCR on PDF"):
             with st.spinner("Extracting text from PDF..."):
                 pdf_bytes = uploaded_file.read()
-                ocr_text = extract_text_from_pdf(pdf_bytes)
-
+                # ocr_text = extract_text_from_pdf(pdf_bytes)
+                st.session_state.ocr_text = extract_text_from_pdf(pdf_bytes)
+            ocr_text = st.session_state.ocr_text
             st.subheader("📝 OCR Text")
             st.text_area("Raw OCR Output", ocr_text, height=400)
             
-            with st.spinner("Loading Mistral model..."):
-                tokenizer, model = load_mistral_model()
+            # with st.spinner("Loading Mistral model..."):
+            #     tokenizer, model = load_mistral_model()
 
-            with st.spinner("Structuring text with Mistral..."):
-                markdown_output = get_structured_markdown(model, tokenizer, ocr_text)
+            # with st.spinner("Structuring text with Mistral..."):
+            #     markdown_output = get_structured_markdown(model, tokenizer, ocr_text)
 
-            st.subheader("📄 Structured Markdown Output")
-            st.code(markdown_output, language="markdown")
+            # st.subheader("📄 Structured Markdown Output")
+            # st.code(markdown_output, language="markdown")
 
-            st.markdown("---")
-            st.subheader("🖼️ Rendered Markdown Preview")
-            st.markdown(markdown_output, unsafe_allow_html=True)
-            st.text_area("Raw OCR Output", markdown_output, height=400)
-            # Download button
-            st.download_button(
-                label="⬇️ Download Markdown File",
-                data=markdown_output,
-                file_name="structured_output.md",
-                mime="text/markdown"
-            )
+            # st.markdown("---")
+            # st.subheader("🖼️ Rendered Markdown Preview")
+            # st.markdown(markdown_output, unsafe_allow_html=True)
+            # st.text_area("Raw OCR Output", markdown_output, height=400)
+            # # Download button
+            # st.download_button(
+            #     label="⬇️ Download Markdown File",
+            #     data=markdown_output,
+            #     file_name="structured_output.md",
+            #     mime="text/markdown"
+            # )
             
 
 
@@ -119,25 +121,26 @@ if uploaded_file is not None:
 #         st.subheader("🧾 Cleaned Text")
 #         st.text_area("Mistral Output", response, height=400)
 
-# if ocr_text:
-#     if st.button("🧱 Convert to Structured Markdown"):
-#         with st.spinner("Loading Mistral model..."):
-#             tokenizer, model = load_mistral_model()
+if "ocr_text" in st.session_state:
+    ocr_text = st.session_state.ocr_text
+    if st.button("🧱 Convert to Structured Markdown"):
+        with st.spinner("Loading Mistral model..."):
+            tokenizer, model = load_mistral_model()
 
-#         with st.spinner("Structuring text with Mistral..."):
-#             markdown_output = get_structured_markdown(model, tokenizer, ocr_text)
+        with st.spinner("Structuring text with Mistral..."):
+            markdown_output = get_structured_markdown(model, tokenizer, ocr_text)
 
-#         st.subheader("📄 Structured Markdown Output")
-#         st.code(markdown_output, language="markdown")
+        st.subheader("📄 Structured Markdown Output")
+        st.code(markdown_output, language="markdown")
 
-#         st.markdown("---")
-#         st.subheader("🖼️ Rendered Markdown Preview")
-#         st.markdown(markdown_output, unsafe_allow_html=True)
-#         # Download button
-#         st.download_button(
-#             label="⬇️ Download Markdown File",
-#             data=markdown_output,
-#             file_name="structured_output.md",
-#             mime="text/markdown"
-#         )
+        st.markdown("---")
+        st.subheader("🖼️ Rendered Markdown Preview")
+        st.markdown(markdown_output, unsafe_allow_html=True)
+        # Download button
+        st.download_button(
+            label="⬇️ Download Markdown File",
+            data=markdown_output,
+            file_name="structured_output.md",
+            mime="text/markdown"
+        )
         
