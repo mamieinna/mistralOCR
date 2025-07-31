@@ -1,5 +1,6 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
+import streamlit as st
 
 @st.cache_resource
 def load_mistral_model():
@@ -11,4 +12,8 @@ def load_mistral_model():
         torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32
     )
     # model = AutoModelForCausalLM.from_pretrained(model_name)
+    print("tokenizer",tokenizer)
+    # Save locally
+    tokenizer.save_pretrained("./local_model_dir")
+    model.save_pretrained("./local_model_dir")
     return tokenizer, model
